@@ -1,0 +1,46 @@
+// Our Includes
+const app   = require('express')(),
+      http  = require('http').Server(app),
+      Twit  = require('twit'),
+      io    = require('socket.io')(http),
+      port  = process.env.PORT || 3000
+
+// Create a Twitter Stream Object
+let T = new Twit({
+  consumer_key:         ENV['CONSUMER_KEY'],
+  consumer_secret:      ENV['CONSUMER_SECRET'],
+  access_token:         ENV['ACCESS_TOKEN'],
+  access_token_secret:  ENV['ACCESS_SECRET_TOKEN'],
+  timeout_ms:           60*1000
+});
+
+// EX  -  http://localhost:3000/?tag=tech&cords=-122.75,36.8,-121.75,37.8
+
+// Main Page Embed
+app.get('/', function(req, res){
+
+  if (!req.query.cords || !req.query.tag) {
+    return res.sendFile(__dirname + '/error.html');
+  }
+
+  let cords = req.query.cords.split(',');
+  let stream = T.stream('statuses/filter', { locations: cords, track: req.query.tag });
+
+  res.sendFile(__dirname + '/index.html');
+
+  // Run on connection
+  io.on('connection', function(socket){
+    stream.on('tweet', function (tweet) {
+      io.emit('newTweet', tweet.text);
+    });
+  });
+
+});
+
+// Run Server
+http.listen(port, function(){
+  console.log('listening on *:' + port);
+});
+
+
+
