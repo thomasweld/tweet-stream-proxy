@@ -1,3 +1,5 @@
+'use strict';
+
 // Our Includes
 const app   = require('express')(),
       http  = require('http').Server(app),
