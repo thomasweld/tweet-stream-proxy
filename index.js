@@ -7,14 +7,14 @@ const app   = require('express')(),
 
 // Create a Twitter Stream Object
 let T = new Twit({
-  consumer_key:         ENV['CONSUMER_KEY'],
-  consumer_secret:      ENV['CONSUMER_SECRET'],
-  access_token:         ENV['ACCESS_TOKEN'],
-  access_token_secret:  ENV['ACCESS_SECRET_TOKEN'],
+  consumer_key:         process.env.CONSUMER_KEY,
+  consumer_secret:      process.env.CONSUMER_SECRET,
+  access_token:         process.env.ACCESS_TOKEN,
+  access_token_secret:  process.env.ACCESS_SECRET_TOKEN,
   timeout_ms:           60*1000
 });
 
-// EX  -  http://localhost:3000/?tag=tech&cords=-122.75,36.8,-121.75,37.8
+// EX  -  http://DOMAIN/?tag=tech&cords=-122.75,36.8,-121.75,37.8
 
 // Main Page Embed
 app.get('/', function(req, res){
