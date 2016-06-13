@@ -16,59 +16,32 @@ const T = new Twit({
   timeout_ms:           60*1000
 });
 
-// EX  -  http://DOMAIN/?tag=tech&cords=-122.75,36.8,-121.75,37.8
-
-const allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    // intercept OPTIONS method
-    ('OPTIONS' == req.method) ? res.send(200) : next();
-};
-
-app.use(allowCrossDomain);
-
 // Janky way to prevent dupliate tweets
 const tweets = [];
 
-// Main Page Embed
-app.get('/', function(req, res){
+// Run on connection
+io.on('connection', function(socket){
 
-  console.log('first');
+  let cords = socket.handshake.query.cords.split(',');
+  let stream = T.stream('statuses/filter', { locations: cords, track: socket.handshake.query.tag });
 
-  if (!req.query.cords || !req.query.tag) {
-    return res.json({ error: 'Please specify both a set of cords and a tag'});
-  }
+  stream.on('tweet', function (tweet) {
 
-  let cords = req.query.cords.split(',');
-  let stream = T.stream('statuses/filter', { locations: cords, track: req.query.tag });
-
-  //res.sendFile(__dirname + '/index.html');
-	res.writeHead(200);
-	res.end();
-
-  // Run on connection
-  io.on('connection', function(socket){
-    stream.on('tweet', function (tweet) {
+    // Check to see if tweet has been sent
+    if (tweets.indexOf(tweet.id) >= 0) {
       io.emit('newTweet', tweet);
-      //console.log('here');
-      
-      //// Check to see if tweet has been sent
-      //if (tweets.indexOf(tweet.id) >= 0) {
-        //io.emit('newTweet', tweet);
-      //}
-      //// Store tweet by it's ID
-      //tweets.push(tweet.id);
+    }
+    // Store tweet by it's ID
+    tweets.push(tweet.id);
 
-    });
   });
-
-  //setInterval( function () {
-    //tweets.length = 0;
-  //}, 1000);
-
-
 });
+
+setInterval( function () {
+  console.log('cleared tweets');
+  tweets.length = 0;
+}, 3000);
+
 
 // Run Server
 http.listen(port, function(){
