@@ -18,6 +18,9 @@ const T = new Twit({
 // Janky way to prevent dupliate tweets
 const tweets = [];
 
+// Set CORS
+io.set('origins', '*');
+
 // Run on connection
 io.on('connection', function(socket){
 
