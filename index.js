@@ -8,7 +8,7 @@ const app   = require('express')(),
       port  = process.env.PORT || 3000
 
 // Create a Twitter Stream Object
-let T = new Twit({
+const T = new Twit({
   consumer_key:         process.env.CONSUMER_KEY,
   consumer_secret:      process.env.CONSUMER_SECRET,
   access_token:         process.env.ACCESS_TOKEN,
@@ -18,7 +18,7 @@ let T = new Twit({
 
 // EX  -  http://DOMAIN/?tag=tech&cords=-122.75,36.8,-121.75,37.8
 
-let allowCrossDomain = function(req, res, next) {
+const allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
@@ -27,6 +27,9 @@ let allowCrossDomain = function(req, res, next) {
 };
 
 app.use(allowCrossDomain);
+
+// Janky way to prevent dupliate tweets
+const tweets = [];
 
 // Main Page Embed
 app.get('/', function(req, res){
@@ -41,9 +44,20 @@ app.get('/', function(req, res){
   // Run on connection
   io.on('connection', function(socket){
     stream.on('tweet', function (tweet) {
-      io.emit('newTweet', tweet.text, tweet);
+      
+      // Check to see if tweet has been sent
+      if (tweets.indexOf(tweet.id) >= 0) {
+        io.emit('newTweet', tweet);
+      }
+      // Store tweet by it's ID
+      tweets.push(tweet.id);
+
     });
   });
+
+  setInterval( function () {
+    tweets.length = 0'
+  }, 1000);
 
   //res.sendFile(__dirname + '/index.html');
 	res.writeHead(200);
