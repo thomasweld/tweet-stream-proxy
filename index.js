@@ -26,7 +26,7 @@ const allowCrossDomain = function(req, res, next) {
 
 app.use(allowCrossDomain);
 
-io.set('origins', 'http://localhost:8082');
+io.set('origins', '*');
 
 
 // Janky way to prevent dupliate tweets
