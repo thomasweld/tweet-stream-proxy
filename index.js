@@ -1,9 +1,9 @@
 'use strict';
 
 // Our Includes
-const http  = require('http').Server(app),
+const app   = require('http').createServer(handler),
       Twit  = require('twit'),
-      io    = require('socket.io')(http),
+      io    = require('socket.io')(app),
       port  = process.env.PORT || 3000
 
 // Create a Twitter Stream Object
@@ -17,6 +17,12 @@ const T = new Twit({
 
 // Janky way to prevent dupliate tweets
 const tweets = [];
+
+// Handler
+function handler (req, res) {
+  res.writeHead(200);
+  res.end(data);
+}
 
 // Set CORS
 io.set('origins', '*');
@@ -46,7 +52,7 @@ setInterval( function () {
 
 
 // Run Server
-http.listen(port, function(){
+app.listen(port, function(){
   console.log('listening on *:' + port);
 });
 
