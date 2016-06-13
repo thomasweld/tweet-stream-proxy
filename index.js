@@ -34,6 +34,8 @@ const tweets = [];
 // Main Page Embed
 app.get('/', function(req, res){
 
+  console.log('first');
+
   if (!req.query.cords || !req.query.tag) {
     return res.json({ error: 'Please specify both a set of cords and a tag'});
   }
@@ -41,27 +43,30 @@ app.get('/', function(req, res){
   let cords = req.query.cords.split(',');
   let stream = T.stream('statuses/filter', { locations: cords, track: req.query.tag });
 
+  //res.sendFile(__dirname + '/index.html');
+	res.writeHead(200);
+	res.end();
+
   // Run on connection
   io.on('connection', function(socket){
     stream.on('tweet', function (tweet) {
+      io.emit('newTweet', tweet);
+      //console.log('here');
       
-      // Check to see if tweet has been sent
-      if (tweets.indexOf(tweet.id) >= 0) {
-        io.emit('newTweet', tweet);
-      }
-      // Store tweet by it's ID
-      tweets.push(tweet.id);
+      //// Check to see if tweet has been sent
+      //if (tweets.indexOf(tweet.id) >= 0) {
+        //io.emit('newTweet', tweet);
+      //}
+      //// Store tweet by it's ID
+      //tweets.push(tweet.id);
 
     });
   });
 
-  setInterval( function () {
-    tweets.length = 0;
-  }, 1000);
+  //setInterval( function () {
+    //tweets.length = 0;
+  //}, 1000);
 
-  //res.sendFile(__dirname + '/index.html');
-	res.writeHead(200);
-	res.end();
 
 });
 
