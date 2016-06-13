@@ -26,6 +26,8 @@ const allowCrossDomain = function(req, res, next) {
 
 app.use(allowCrossDomain);
 
+io.set('origins', '*');
+
 
 // Janky way to prevent dupliate tweets
 const tweets = [];
