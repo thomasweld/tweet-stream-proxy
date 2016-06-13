@@ -1,8 +1,7 @@
 'use strict';
 
 // Our Includes
-const app   = require('express')(),
-      http  = require('http').Server(app),
+const http  = require('http').Server(app),
       Twit  = require('twit'),
       io    = require('socket.io')(http),
       port  = process.env.PORT || 3000
