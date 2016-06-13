@@ -32,7 +32,7 @@ app.use(allowCrossDomain);
 app.get('/', function(req, res){
 
   if (!req.query.cords || !req.query.tag) {
-    return res.sendFile(__dirname + '/error.html');
+    return res.json({ error: 'Please specify both a set of cords and a tag'});
   }
 
   let cords = req.query.cords.split(',');
