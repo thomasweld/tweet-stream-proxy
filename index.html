@@ -19,7 +19,8 @@
       
       var socket = io();
 
-      socket.on('newTweet', function(msg){
+      socket.on('newTweet', function(msg, obj){
+        console.log(obj);
         $('#tweets').append($('<li>').text(msg));
       });
 

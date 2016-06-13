@@ -18,6 +18,16 @@ let T = new Twit({
 
 // EX  -  http://DOMAIN/?tag=tech&cords=-122.75,36.8,-121.75,37.8
 
+let allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    // intercept OPTIONS method
+    ('OPTIONS' == req.method) ? res.send(200) : next();
+};
+
+app.use(allowCrossDomain);
+
 // Main Page Embed
 app.get('/', function(req, res){
 
@@ -28,14 +38,16 @@ app.get('/', function(req, res){
   let cords = req.query.cords.split(',');
   let stream = T.stream('statuses/filter', { locations: cords, track: req.query.tag });
 
-  res.sendFile(__dirname + '/index.html');
-
   // Run on connection
   io.on('connection', function(socket){
     stream.on('tweet', function (tweet) {
-      io.emit('newTweet', tweet.text);
+      io.emit('newTweet', tweet.text, tweet);
     });
   });
+
+  //res.sendFile(__dirname + '/index.html');
+	res.writeHead(200);
+	res.end();
 
 });
 
