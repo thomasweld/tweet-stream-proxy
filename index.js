@@ -1,7 +1,7 @@
 'use strict';
 
 // Our Includes
-const app   = require('http').createServer(handler),
+const app   = require('http').createServer(),
       Twit  = require('twit'),
       io    = require('socket.io')(app),
       port  = process.env.PORT || 3000
@@ -17,12 +17,6 @@ const T = new Twit({
 
 // Janky way to prevent dupliate tweets
 const tweets = [];
-
-// Handler
-function handler (req, res) {
-  res.writeHead(200);
-  res.end(data);
-}
 
 // Set CORS
 io.set('origins', '*');
