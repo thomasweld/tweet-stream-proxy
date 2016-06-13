@@ -56,7 +56,7 @@ app.get('/', function(req, res){
   });
 
   setInterval( function () {
-    tweets.length = 0'
+    tweets.length = 0;
   }, 1000);
 
   //res.sendFile(__dirname + '/index.html');
