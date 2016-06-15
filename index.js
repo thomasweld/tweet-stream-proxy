@@ -38,7 +38,7 @@ io.on('connection', function(socket){
   console.log('connected');
 
   let cords = socket.handshake.query.cords.split(',');
-  let stream = T.stream('statuses/filter', { locations: cords, track: socket.handshake.query.tag });
+  let stream = T.stream('statuses/filter', { locations: cords });
 
   stream.on('tweet', function (tweet) {
 
