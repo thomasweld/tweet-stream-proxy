@@ -47,13 +47,18 @@ io.on('connection', function(socket){
 
     console.log('got a tweet: ' + tweet);
 
+
+    io.emit('newTweet', tweet);
+
+
+
     // Send new tweets, not dupes
-    if (tweets.indexOf(tweet.id) < 0) {
-      io.emit('newTweet', tweet);
-      console.log("returning tweet to frontend: " + tweet.id);
-    } else {
-      console.log("duplicate tweet: " + tweet.id);
-    }
+    // if (tweets.indexOf(tweet.id) < 0) {
+    //   io.emit('newTweet', tweet);
+    //   console.log("returning tweet to frontend: " + tweet.id);
+    // } else {
+    //   console.log("duplicate tweet: " + tweet.id);
+    // }
 
     // Check to see if tweet has been sent
     /*
