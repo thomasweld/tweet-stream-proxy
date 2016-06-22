@@ -30,7 +30,7 @@ io.set('origins', 'http://localhost:*');
 
 
 // Janky way to prevent dupliate tweets
-const tweets = [];
+var tweets = [];
 
 // Run on connection
 io.on('connection', function(socket){
@@ -43,6 +43,7 @@ io.on('connection', function(socket){
 
   stream.on('tweet', function (tweet) {
 
+    console.log('got a tweet: ' + tweet);
     // Check to see if tweet has been sent
     if (tweets.indexOf(tweet.id) >= 0) {
       io.emit('newTweet', tweet);
