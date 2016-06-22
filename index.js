@@ -37,14 +37,16 @@ io.on('connection', function(socket){
 
   console.log('connected');
 
-  let cords = socket.handshake.query.cords.split(',');
-  let stream = T.stream('statuses/filter', { locations: cords });
+  let coords = socket.handshake.query.coords.split(',');
+  console.log("received query: " + coords);
+  let stream = T.stream('statuses/filter', { locations: coords });
 
   stream.on('tweet', function (tweet) {
 
     // Check to see if tweet has been sent
     if (tweets.indexOf(tweet.id) >= 0) {
       io.emit('newTweet', tweet);
+      console.log("returning tweet to frontend: " + tweet);
     }
     // Store tweet by it's ID
     tweets.push(tweet.id);
@@ -60,6 +62,3 @@ setInterval( function () {
 http.listen(port, function(){
   console.log('listening on *:' + port);
 });
-
-
-
