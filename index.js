@@ -40,6 +40,7 @@ io.on('connection', function(socket){
   let coords = socket.handshake.query.coords.split(',');
   console.log("received query: " + coords);
   let stream = T.stream('statuses/filter', { locations: coords });
+  console.log("successfully created a stream. maybe: " + stream);
 
   stream.on('tweet', function (tweet) {
 
