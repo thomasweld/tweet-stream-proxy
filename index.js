@@ -39,8 +39,8 @@ io.on('connection', function(socket){
 
   let coords = socket.handshake.query.coords.split(',');
   console.log("received query: " + coords);
-//  let stream = T.stream('statuses/filter', { locations: coords });
-  let stream = T.stream("statuses/sample");
+  let stream = T.stream('statuses/filter', { locations: coords });
+  // let stream = T.stream("statuses/sample");
   console.log("successfully created a stream. maybe: " + stream);
 
   stream.on('tweet', function (tweet) {
@@ -54,6 +54,10 @@ io.on('connection', function(socket){
     // Store tweet by it's ID
     tweets.push(tweet.id);
 
+  });
+
+  stream.on('message', function (msg) {
+    console.log("message received: " + msg);
   });
 });
 
