@@ -7,14 +7,14 @@ const app   = require('express')(),
       io    = require('socket.io')(http),
       port  = process.env.PORT || 3000
 
-// Create a Twitter Stream Object
-// const T = new Twit({
-//   consumer_key:         process.env.CONSUMER_KEY,
-//   consumer_secret:      process.env.CONSUMER_SECRET,
-//   access_token:         process.env.ACCESS_TOKEN,
-//   access_token_secret:  process.env.ACCESS_SECRET_TOKEN,
-//   timeout_ms:           60*1000
-// });
+Create a Twitter Stream Object
+const T = new Twit({
+  consumer_key:         process.env.CONSUMER_KEY,
+  consumer_secret:      process.env.CONSUMER_SECRET,
+  access_token:         process.env.ACCESS_TOKEN,
+  access_token_secret:  process.env.ACCESS_SECRET_TOKEN,
+  timeout_ms:           60*1000
+});
 
 const allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -31,16 +31,18 @@ io.set('origins', 'http://localhost:*');
 // Janky way to prevent dupliate tweets
 var tweets = [];
 
-function geoStream (coords) {
-  let twitter = new Twit({
-    consumer_key:         process.env.CONSUMER_KEY,
-    consumer_secret:      process.env.CONSUMER_SECRET,
-    access_token:         process.env.ACCESS_TOKEN,
-    access_token_secret:  process.env.ACCESS_SECRET_TOKEN,
-    timeout_ms:           60*1000
-  });
-  return T.stream('statuses/filter', { locations: coords });
-}
+
+// attempt to restart socket on new campaign
+// function geoStream (coords) {
+//   let twitter = new Twit({
+//     consumer_key:         process.env.CONSUMER_KEY,
+//     consumer_secret:      process.env.CONSUMER_SECRET,
+//     access_token:         process.env.ACCESS_TOKEN,
+//     access_token_secret:  process.env.ACCESS_SECRET_TOKEN,
+//     timeout_ms:           60*1000
+//   });
+//   return T.stream('statuses/filter', { locations: coords });
+// }
 
 // Run on connection
 io.on('connection', function(socket){
