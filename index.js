@@ -7,7 +7,7 @@ const app   = require('express')(),
       io    = require('socket.io')(http),
       port  = process.env.PORT || 3000
 
-Create a Twitter Stream Object
+// Create a Twitter Stream Object
 const T = new Twit({
   consumer_key:         process.env.CONSUMER_KEY,
   consumer_secret:      process.env.CONSUMER_SECRET,
