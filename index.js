@@ -28,21 +28,9 @@ app.use(allowCrossDomain);
 
 io.set('origins', 'http://localhost:*');
 
+
 // Janky way to prevent dupliate tweets
-var tweets = [];
-
-
-// attempt to restart socket on new campaign
-// function geoStream (coords) {
-//   let twitter = new Twit({
-//     consumer_key:         process.env.CONSUMER_KEY,
-//     consumer_secret:      process.env.CONSUMER_SECRET,
-//     access_token:         process.env.ACCESS_TOKEN,
-//     access_token_secret:  process.env.ACCESS_SECRET_TOKEN,
-//     timeout_ms:           60*1000
-//   });
-//   return T.stream('statuses/filter', { locations: coords });
-// }
+const tweets = [];
 
 // Run on connection
 io.on('connection', function(socket){
@@ -50,41 +38,17 @@ io.on('connection', function(socket){
   console.log('connected');
 
   let coords = socket.handshake.query.coords.split(',');
-  console.log("received query: " + coords);
-  let stream = geoStream(coords);
-  // let stream = T.stream('statuses/filter', { locations: coords });
-  // let stream = T.stream("statuses/sample");
-  console.log("successfully created a stream. maybe: " + stream);
+  let stream = T.stream('statuses/filter', { locations: coords });
 
   stream.on('tweet', function (tweet) {
 
-    console.log('got a tweet: ' + tweet);
-
-    io.emit('newTweet', tweet);
-
-    // Send new tweets, not dupes
-    // if (tweets.indexOf(tweet.id) < 0) {
-    //   io.emit('newTweet', tweet);
-    //   console.log("returning tweet to frontend: " + tweet.id);
-    // } else {
-    //   console.log("duplicate tweet: " + tweet.id);
-    // }
-
     // Check to see if tweet has been sent
-    /*
-    if (tweets.indexOf(tweet.id) >= 0) {
+    // if (tweets.indexOf(tweet.id) >= 0) {
       io.emit('newTweet', tweet);
-      console.log("returning tweet to frontend: " + tweet);
-    }
-    */
-
+    // }
     // Store tweet by it's ID
     tweets.push(tweet.id);
 
-  });
-
-  stream.on('message', function (msg) {
-    console.log("message received: " + msg);
   });
 });
 
